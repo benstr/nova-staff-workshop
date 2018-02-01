@@ -10,8 +10,10 @@ BTN_PIN = 4 ## GPIO pin the button is attached to
 ##setup button pin
 GPIO.setup(BTN_PIN,GPIO.IN,pull_up_down=GPIO.PUD_UP) ## Setup GPIO pin as an input
 
+GPIO.setup(LED_PIN, GPIO.OUT)
+
 ## setup Hologram
-hologram = HologramCloud(dict(), network='cellular', authtype='sim-otp')
+hologram = HologramCloud(dict(), network='cellular', authentication_type='sim-otp')
 TOPIC = 'benstrs-light'
 
 ## LED state
@@ -36,6 +38,7 @@ def blink(PIN, hold = 0.5):
 
 ## Function to toggle LED
 def toggleLed(PIN):
+    global LED_STATE
     if LED_STATE is True:
         lightOff(PIN)
         LED_STATE = False
@@ -56,7 +59,7 @@ try:
             result = toggleLed(LED_PIN)
             
             ## send event message to the cloud
-            hologram.sendMessage("light turned "  + result, [TOPIC])
+            hologram.sendMessage("light turned "  + str(result), [TOPIC])
 
 finally:
     GPIO.output(LED_PIN,False) ## Switch off LED
